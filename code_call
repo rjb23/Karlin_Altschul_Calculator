@@ -1,0 +1,59 @@
+# Karlin-Altschul P-value & E-value Calculator (Jupyter Notebook Version)
+
+import math
+
+# Function to safely get positive float input
+def get_positive_float(prompt):
+    while True:
+        try:
+            value = float(input(prompt).strip())
+            if value <= 0:
+                print("Value must be positive. Please try again.")
+            else:
+                return value
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+# Main function for Karlin-Altschul calculation
+def karlin_altschul():
+    print("\n===== Karlin-Altschul P-value & E-value Calculator =====")
+
+    while True:
+        # Collect inputs
+        K = get_positive_float("Enter K (Karlin-Altschul constant, e.g., 0.1): ")
+        M = get_positive_float("Enter M (length of query sequence, e.g., 8): ")
+        N = get_positive_float("Enter N (length of subject sequence, e.g., 12): ")
+        lam = get_positive_float("Enter lambda (scaling factor, e.g., 0.693): ")
+        S = get_positive_float("Enter alignment score S (e.g., 8): ")
+
+        try:
+            # Step 1: Calculate exponent term
+            exp_term = math.exp(-lam * S)
+
+            # Step 2: Calculate product K * M * N
+            kmn = K * M * N
+
+            # Step 3: Calculate expected number of matches (E-value)
+            e_value = kmn * exp_term
+
+            # Step 4: Calculate P-value
+            p_value = 1 - math.exp(-e_value)
+
+            # Display results
+            print("\n--- Karlin-Altschul Calculation Results ---")
+            print(f"K × M × N = {kmn:.6f}")
+            print(f"Exponent term e^(-λ × S) = {exp_term:.6f}")
+            print(f"E-value = {e_value:.6f}")
+            print(f"P-value = {p_value:.6f}")
+
+        except OverflowError:
+            print("Calculation error: numerical overflow. Try smaller values.")
+
+        again = input("\nWould you like to perform another calculation? (yes/no): ").strip().lower()
+        if again != 'yes':
+            print("Exiting the calculator. Goodbye!")
+            break
+
+
+# To run the calculator in Jupyter Notebook, simply call the function:
+karlin_altschul()
